@@ -1,17 +1,14 @@
 var fileManager = require("./CreateRSC.js");
-//var notesLib = require("./intranetAPI.js");
 var Client = require('ssh2').Client;
 var stationConn = new Client();  //These are required for the SSH connection
 var bridgeConn = new Client();
 var readline = require('readline');
 var serial = null;
-var manjob = null;
-var intranetUser = ""
-var intranetPassword = ""
 var r1 = readline.createInterface({
   input: process.stdin,
   output: process.stdout
 });
+var updateFiles = ['ntp-6.37.1-mipsbe.npk', 'routeros-mipsbe-6.37.1.npk'];
 
 stationConn.info = {port:22, ip:"192.168.88.1", futureIP:"", futureUsername:"", futurePassword:"", eMAC:"", wMAC:"", ssid:"", username:"admin", password:"", ssidKey:"", settingsFile:"", name:'station'};
 bridgeConn.info = {port:22, ip:"192.168.88.1", futureIP:"", futureUsername:"", futurePassword:"", eMAC:"", wMAC:"", ssid:"", username:"admin", password:"", ssidKey:"", settingsFile:"", name:'bridge'};
@@ -20,14 +17,9 @@ bridgeConn.readyCallback = configureBridge; //We will set them to test the conne
 stationConn.closeCallback = defaultCloseCallback;
 bridgeConn.closeCallback = defaultCloseCallback;
 
-var updateFiles = ['ntp-6.37.1-mipsbe.npk', 'routeros-mipsbe-6.37.1.npk'];
-
 r1.question("Enter serial: ", (answer) => {
     serial = answer;
-    /*r1.question("Enter manjob: ", (answer1) => {
-        manjob = answer1; */
-        connect(stationConn);
-    //})
+    connect(stationConn);
 })
 
 function connect(conn, options)
@@ -98,10 +90,6 @@ function printInfo() {
     'Password: '+bridgeConn.info.password+'\n'+
     '--------------------------------------------------';
     console.log(info);
-    //notesLib.setUsernamePassword("intranetUser","intranetPassword");
-    //notesLib.appendManjobNotes(manjob, info, function(err,res) {
-        //console.log(`err: ${err} res: ${res}`);
-    //});
 } 
 
 function bridgeRebooting()
@@ -132,7 +120,6 @@ function testRouter(conn)
 
     try {
         sendCommand(conn, '/ip address remove numbers=0', function(results) {
-            console.log("YESYESYESYEEYESYEYSEYSEYSEYASFKJSDGFLKSDJGLSKDJGSLDKGJSLKDGJ");
             console.log(results.toString());
             conn.end();
         });
@@ -145,7 +132,7 @@ function testRouter(conn)
 
 function defaultCloseCallback(code, signal)
 {
-    console.log("Connection closed unexpectedly.");
+    console.log("Connection closed.");
 }
 
 stationConn.on('close', function(code, signal) {
@@ -205,12 +192,12 @@ bridgeConn.on('ready', function(err) { //This will fire after the bridge connect
 });
 
 bridgeConn.on('error', function(err) {
-    //console.log(err);
+    console.log(err);
     bridgeConn.end();
 });
 
 stationConn.on('error', function(err) { 
-    //console.log(err);
+    console.log(err);
     stationConn.end();
 });
 
@@ -227,7 +214,6 @@ function stationRebooting(results) //Our station is configured, now we reboot an
 
 function resetRouter(conn, cb)
 {
-    console.log('system reset-configuration no-defaults=yes run-after-reset=flash/'+conn.info.settingsFile);
     sendCommand(conn, 'system reset-configuration no-defaults=yes run-after-reset=flash/'+conn.info.settingsFile, cb);
 }
 
