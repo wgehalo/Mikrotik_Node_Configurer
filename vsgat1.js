@@ -1,6 +1,6 @@
 var Client = require('ssh2').Client;
 var conn = new Client();  //These are required for the SSH connection
-var updateFiles = ['ntp-6.36.3-mipsbe.npk', 'routeros-mipsbe-6.36.3.npk'];
+var updateFiles = ['ntp-6.37.1-mipsbe.npk', 'routeros-mipsbe-6.37.1.npk'];
 conn.info = {
     ip: "192.168.88.1",
     port: 22,
