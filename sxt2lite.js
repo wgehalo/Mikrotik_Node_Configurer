@@ -1,5 +1,5 @@
 var fileManager = require("./CreateRSC.js");
-var notesLib = require("./intranetAPI.js")
+//var notesLib = require("./intranetAPI.js");
 var Client = require('ssh2').Client;
 var stationConn = new Client();  //These are required for the SSH connection
 var bridgeConn = new Client();
@@ -24,10 +24,10 @@ var updateFiles = ['ntp-6.37.1-mipsbe.npk', 'routeros-mipsbe-6.37.1.npk'];
 
 r1.question("Enter serial: ", (answer) => {
     serial = answer;
-    r1.question("Enter manjob: ", (answer1) => {
-        manjob = answer1;
+    /*r1.question("Enter manjob: ", (answer1) => {
+        manjob = answer1; */
         connect(stationConn);
-    })
+    //})
 })
 
 function connect(conn, options)
@@ -98,10 +98,10 @@ function printInfo() {
     'Password: '+bridgeConn.info.password+'\n'+
     '--------------------------------------------------';
     console.log(info);
-    notesLib.setUsernamePassword("intranetUser","intranetPassword");
-    notesLib.appendManjobNotes(manjob, info, function(err,res) {
-        console.log(`err: ${err} res: ${res}`);
-    });
+    //notesLib.setUsernamePassword("intranetUser","intranetPassword");
+    //notesLib.appendManjobNotes(manjob, info, function(err,res) {
+        //console.log(`err: ${err} res: ${res}`);
+    //});
 } 
 
 function bridgeRebooting()
